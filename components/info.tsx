@@ -1,11 +1,12 @@
 "use client";
 
-import { ShoppingCart } from "lucide-react";
+import { Heart, ShoppingCart } from "lucide-react";
 
 import { Product } from "@/types";
 import Currency from "@/components/ui/currency";
 import Button from "@/components/ui/button";
 import useCart from "@/hooks/use-cart";
+import useFavourites from "@/hooks/use-favourites";
 
 interface InfoProps {
     data: Product;
@@ -16,6 +17,7 @@ const Info:React.FC<InfoProps> = ({
 }) => {
 
     const cart = useCart();
+    const favourites = useFavourites();
 
     return ( 
         <div>
@@ -47,6 +49,10 @@ const Info:React.FC<InfoProps> = ({
                 <Button onClick={() => cart.addItem(data)} className="flex items-center gap-x-2">
                     Add To Cart
                     <ShoppingCart />
+                </Button>
+                <Button onClick={() => favourites.addItem(data)} className="flex items-center gap-x-2">
+                    Add To Favourite
+                    <Heart />
                 </Button>
             </div>
         </div>

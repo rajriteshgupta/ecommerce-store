@@ -1,15 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { Expand, ShoppingCart } from "lucide-react";
+import { Expand, Heart, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useState, useEffect } from "react";
 
 import { Product } from "@/types";
 import Currency from "@/components/ui/currency";
 import IconButton from "@/components/ui/icon-button";
 import usePreviewModal from "@/hooks/use-preview-modal";
 import useCart from "@/hooks/use-cart";
+import useFavourites from "@/hooks/use-favourites";
 
 interface ProductCardProps {
     data: Product;
@@ -18,9 +19,18 @@ interface ProductCardProps {
 const ProductCard:React.FC<ProductCardProps> = ({
     data
 }) => {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
     const cart = useCart();
     const previewModal = usePreviewModal();
     const router = useRouter();
+    const favourites = useFavourites();
+
+    const isFavourite = favourites.items.find((item) => item.id === data.id);
 
     const handleClick = () => {
         router.push(`/product/${data?.id}`);
@@ -34,6 +44,20 @@ const ProductCard:React.FC<ProductCardProps> = ({
     const onAddToCart: MouseEventHandler<HTMLButtonElement> = (event) => {
         event.stopPropagation();
         cart.addItem(data);
+    }
+    
+    const onAddToFavourites: MouseEventHandler<HTMLButtonElement> = (event) => {
+        event.stopPropagation();
+        if(isFavourite) {
+            favourites.removeItem(data.id);
+        }
+        else {
+            favourites.addItem(data);
+        }
+    }
+    
+    if(!isMounted){
+        return null;
     }
 
     return ( 
@@ -62,14 +86,26 @@ const ProductCard:React.FC<ProductCardProps> = ({
                     </div>
                 </div>
             </div>
-            {/* Description */}
-            <div>
-                <p className="font-semibold text-lg">
-                    {data.name}
-                </p>
-                <p className="text-sm text-gray-500">
-                    {data.category?.name}
-                </p>
+            {/* Description and Favourites */}
+            <div className="flex w-full justify-between">
+                <div>
+                    <p className="font-semibold text-lg">
+                        {data.name}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                        {data.category?.name}
+                    </p>
+                </div>
+                <div className="flex items-end">
+                    <IconButton 
+                        onClick={ onAddToFavourites }
+                        icon={<Heart 
+                                size={20} 
+                                fill={isFavourite ? "red" : "transparent"}
+                                color="red"
+                            />}
+                    />
+                </div>
             </div>
             {/* Price */}
             <div className="flex items-center justify-between">

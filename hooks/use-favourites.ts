@@ -4,7 +4,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 import { Product } from "@/types";
 
-interface CartStore {
+interface FavouritesStore {
     items: Product[];
     addItem: (data: Product) => void;
     removeItem: (id: string) => void;
@@ -12,31 +12,31 @@ interface CartStore {
     removeAll: () => void;
 };
 
-const useCart = create(
-    persist<CartStore>((set, get) => ({
+const useFavourites = create(
+    persist<FavouritesStore>((set, get) => ({
         items: [],
         addItem: (data: Product) => {
             const currentItems = get().items;
             const existingItem = currentItems.find((item) => item.id === data.id);
 
             if(existingItem) {
-                return toast("Item already in cart.");
+                return toast("Item already in favourites.");
             }
 
             set({items: [...get().items, data]});
-            toast.success("Item added to cart.");
+            toast.success("Item added to favourites.");
         },
         removeItem: (id: string) => {
             set({items: [...get().items.filter((item) => item.id !== id)]});
-            toast.success("Items removed from the cart.")
+            toast.success("Item removed from the favourites.")
         },
         moveItem: (id: string) => {
             set({items: [...get().items.filter((item) => item.id !== id)]});
         },
         removeAll: () => set({items: []}),
     }), {
-        name: "cart-storage",
+        name: "favourites-storage",
         storage: createJSONStorage(() => localStorage)
     })
 )
-export default useCart;
+export default useFavourites;

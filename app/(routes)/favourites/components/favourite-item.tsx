@@ -1,33 +1,33 @@
 "use client";
 
-import { Heart, X } from "lucide-react";
+import { ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
 
 import Currency from "@/components/ui/currency";
 import IconButton from "@/components/ui/icon-button";
-import useCart from "@/hooks/use-cart";
+import useFavourites from "@/hooks/use-favourites";
 import { Product } from "@/types";
 import Button from "@/components/ui/button";
-import useFavourites from "@/hooks/use-favourites";
+import useCart from "@/hooks/use-cart";
 
-interface CartItemProps {
+interface FavouriteItemProps {
     data: Product;
 }
 
-const CartItem:React.FC<CartItemProps> = ({
+const FavouriteItem:React.FC<FavouriteItemProps> = ({
     data
 }) => {
 
-    const cart = useCart();
     const favourites = useFavourites();
+    const cart = useCart();
 
     const onRemove = () => {
-        cart.removeItem(data.id);
+        favourites.removeItem(data.id);
     }
 
-    const addToFavourite = () => {
-        favourites.addItem(data);
-        cart.moveItem(data.id);
+    const addToCart = () => {
+        cart.addItem(data);
+        favourites.moveItem(data.id);
     }
 
     return ( 
@@ -57,9 +57,9 @@ const CartItem:React.FC<CartItemProps> = ({
                     <Currency value={data.price} />
                 </div>
                 <div className="flex items-center">
-                    <Button onClick={addToFavourite} className="flex gap-x-2">
-                        Move to Favourite
-                        <Heart />
+                    <Button onClick={addToCart} className="flex gap-x-2">
+                        Add To Cart
+                        <ShoppingCart />
                     </Button>
                 </div>
             </div>
@@ -67,4 +67,4 @@ const CartItem:React.FC<CartItemProps> = ({
      );
 }
  
-export default CartItem;
+export default FavouriteItem;
