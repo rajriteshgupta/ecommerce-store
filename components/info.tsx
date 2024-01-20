@@ -1,6 +1,8 @@
 "use client";
 
 import { Heart, ShoppingCart } from "lucide-react";
+import { useAuth } from "@clerk/nextjs";
+import toast from "react-hot-toast";
 
 import { Product } from "@/types";
 import Currency from "@/components/ui/currency";
@@ -16,8 +18,18 @@ const Info:React.FC<InfoProps> = ({
     data
 }) => {
 
+    const { isSignedIn } = useAuth();
     const cart = useCart();
     const favourites = useFavourites();
+
+    const addToFavourites = () => {
+        if(isSignedIn) {
+            favourites.addItem(data);
+        }
+        else {
+            toast.error("Please Sign in first.");
+        }
+    }
 
     return ( 
         <div>
@@ -50,7 +62,7 @@ const Info:React.FC<InfoProps> = ({
                     Add To Cart
                     <ShoppingCart />
                 </Button>
-                <Button onClick={() => favourites.addItem(data)} className="flex items-center gap-x-2">
+                <Button onClick={addToFavourites} className="flex items-center gap-x-2">
                     Add To Favourite
                     <Heart />
                 </Button>

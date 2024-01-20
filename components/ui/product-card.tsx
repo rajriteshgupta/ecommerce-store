@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Expand, Heart, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { MouseEventHandler, useState, useEffect } from "react";
+import { useAuth } from "@clerk/nextjs";
+import toast from "react-hot-toast";
 
 import { Product } from "@/types";
 import Currency from "@/components/ui/currency";
@@ -20,6 +22,7 @@ const ProductCard:React.FC<ProductCardProps> = ({
     data
 }) => {
     const [isMounted, setIsMounted] = useState(false);
+    const { isSignedIn } = useAuth();
 
     useEffect(() => {
         setIsMounted(true);
@@ -48,11 +51,16 @@ const ProductCard:React.FC<ProductCardProps> = ({
     
     const onAddToFavourites: MouseEventHandler<HTMLButtonElement> = (event) => {
         event.stopPropagation();
-        if(isFavourite) {
-            favourites.removeItem(data.id);
+        if(isSignedIn) {
+            if(isFavourite) {
+                favourites.removeItem(data.id);
+            }
+            else {
+                favourites.addItem(data);
+            }
         }
         else {
-            favourites.addItem(data);
+            toast.error("Please Sign in first.");
         }
     }
     
