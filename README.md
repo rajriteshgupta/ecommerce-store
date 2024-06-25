@@ -1,4 +1,4 @@
-# E-commerce Admin
+# E-commerce Store
 
 An e-commerce store application to provide functionality to add products to cart and place orders. This application is capable of managing favourites and filtering products with multiple filters.
 
